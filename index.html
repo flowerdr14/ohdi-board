@@ -1,0 +1,121 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><link rel="stylesheet" href="style.css"></head><body>
+<title>OHDI 판서</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Titan+One&family=Gothic+A1:wght@400;500;700&display=swap">
+
+
+<!-- ================= 목록 화면 ================= -->
+<section class="view on" id="v-lib" aria-label="교재 목록">
+  <div class="top">
+    <h1 class="logo">OHDI (오디)</h1>
+    <p class="sub">On Hyperboard Document Interactiveboard</p>
+  </div>
+  <div class="lib">
+    <nav class="side" aria-label="메뉴">
+      <label class="search"><input id="q" type="search" placeholder="교재 찾기" aria-label="교재 찾기"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l6 6"/></svg></label>
+      <button class="menu" id="m-new"><svg viewBox="0 0 24 24" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M12 3v18M3 12h18"/></svg>교재생성</button>
+      <button class="menu" id="m-del" aria-pressed="false"><svg viewBox="0 0 24 24" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M4 4l16 16M20 4L4 20"/></svg>교재삭제</button>
+      <button class="menu" id="m-edit" aria-pressed="false"><svg viewBox="0 0 24 24" fill="#fff"><path d="M3 21l1.2-5L16 4.2a1.7 1.7 0 012.4 0l1.4 1.4a1.7 1.7 0 010 2.4L8 19.8zM5.6 17.6l-.5 1.8 1.8-.5z"/></svg>교재수정</button>
+      <button class="menu quit" id="m-quit"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="#fff" stroke-width="2"/><path d="M8 8l8 8M16 8l-8 8" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/></svg>종료</button>
+    </nav>
+    <div class="grid-wrap"><div class="grid" id="grid"></div></div>
+  </div>
+</section>
+
+<!-- ================= 판서 화면 ================= -->
+<section class="view" id="v-board" aria-label="판서">
+  <div class="board">
+    <div class="stage" id="stage">
+      <div class="page" id="page">
+        <div class="zi" id="zi">
+          <canvas id="bg" width="1200" height="1520"></canvas>
+          <canvas id="ink" width="1200" height="1520" aria-label="판서 영역"></canvas>
+        </div>
+        <div class="pno" id="pno">1 / 1</div>
+      </div>
+      <div class="sel" id="sel"><div class="selr" id="selr"></div></div>
+      <div class="pen" id="pen">
+        <div class="cols" id="cols"></div>
+        <div class="step"><button id="szUp" aria-label="굵게">⌃</button><span id="szv">3</span><button id="szDn" aria-label="가늘게">⌄</button></div>
+        <div class="wheel">
+          <button class="w1" data-tool="pen" aria-label="펜" aria-pressed="true"><svg viewBox="0 0 24 24" fill="#fff"><path d="M3 21l1.2-5L16 4.2a1.7 1.7 0 012.4 0l1.4 1.4a1.7 1.7 0 010 2.4L8 19.8z"/></svg></button>
+          <button class="w2" data-tool="hl" aria-label="형광펜" aria-pressed="false"><svg viewBox="0 0 24 24" fill="#fff"><path d="M14 3l7 7-8 8-3-1-4 4H3v-3l4-4-1-3z"/></svg></button>
+          <button class="w3" data-tool="eraser" aria-label="지우개" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"><path d="M9 20h11M4.5 14.5L14 5l6 6-8 8H8z"/></svg></button>
+          <button class="w4" id="clr" aria-label="페이지 모두 지우기"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg></button>
+          <button class="main" id="mainTool" aria-label="현재 도구"><svg viewBox="0 0 24 24" fill="#fff"><path d="M3 21l1.2-5L16 4.2a1.7 1.7 0 012.4 0l1.4 1.4a1.7 1.7 0 010 2.4L8 19.8z"/></svg></button>
+        </div>
+      </div>
+      <div class="ov" id="ov"></div>
+    </div>
+    <div class="bar" role="toolbar" aria-label="판서 도구">
+      <button class="tb" id="b-add" aria-label="새 페이지 추가"><svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 3v18M3 12h18"/></svg></button>
+      <button class="tb" id="b-prev" aria-label="이전 페이지"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <button class="tb" id="b-next" aria-label="다음 페이지"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+      <div class="gap"></div>
+      <button class="tb" id="b-pen" aria-label="펜 도구" aria-pressed="false"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 21l1.2-5L16 4.2a1.7 1.7 0 012.4 0l1.4 1.4a1.7 1.7 0 010 2.4L8 19.8z"/></svg></button>
+<button class="tb" id="b-zoom" aria-label="페이지 모아보기" title="모아보기" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><rect x="3" y="3" width="7.5" height="7.5" rx="1"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="1"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="1"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1"/></svg></button>
+      <button class="tb" id="b-zsel" aria-label="구간 확대" title="구간 확대" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="2.5" y="2.5" width="11" height="11" rx="1" stroke-dasharray="3 2.4" stroke-width="1.8"/><circle cx="12" cy="12" r="5.5"/><path d="M16 16l5 5"/></svg></button>
+      <button class="tb" id="b-zin" aria-label="확대" title="확대 +"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l6 6"/><path d="M7.3 10h5.4M10 7.3v5.4"/></svg></button>
+      <button class="tb" id="b-zout" aria-label="축소" title="확대 −"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l6 6"/><path d="M7.3 10h5.4"/></svg></button>
+      <button class="tb" id="b-pan" aria-label="이동" title="이동" aria-pressed="false" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 13V5.5a1.5 1.5 0 013 0V11m0-1.5V4a1.5 1.5 0 013 0v6m0-4a1.5 1.5 0 013 0v7.5c0 4-2.5 7-6.5 7-3 0-4.5-1.6-6-4.2L4 14.5a1.5 1.5 0 012.4-1.7L8 14.5"/></svg></button>
+      <button class="tb" id="b-reset" aria-label="원래대로" title="원래대로" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h6V3M21 9h-6V3M3 15h6v6M21 15h-6v6"/></svg></button>
+      <button class="tb rec" id="b-rec" aria-label="녹화">REC</button>
+      <div class="gap"></div>
+      <button class="tb exit" id="b-exit" aria-label="교재 목록으로">EXIT</button>
+    </div>
+  </div>
+</section>
+
+<!-- 교재 생성/수정 -->
+<div class="scrim" id="sc-form">
+  <div class="dlg" role="dialog" aria-modal="true" aria-labelledby="fTitle">
+    <header><span id="fTitle">교재 생성하기</span><button id="fClose" aria-label="닫기">X</button></header>
+    <div class="body">
+      <div class="col-cover">
+        <p class="lab">[ 표 지 ]</p>
+        <div class="cvbox" id="cvbox" tabindex="0" role="button" aria-label="표지 이미지 선택">표지 이미지 선택</div>
+        <input type="file" id="cvfile" accept="image/*" hidden>
+        <div class="radios">
+          <label><input type="radio" name="cvm" value="upload" checked>업로드하기</label>
+          <label><input type="radio" name="cvm" value="first">교재 첫페이지로</label>
+        </div>
+      </div>
+      <div class="col-main">
+        <p class="lab">[ 세 부 사 항 ]</p>
+        <div class="row"><label for="fT">제 목 :</label><input class="in" id="fT" maxlength="40"></div>
+        <div class="row"><label for="fD">설 명:</label><input class="in" id="fD" maxlength="80"></div>
+        <div class="row" style="margin-top:6px"><label style="width:auto" for="fA">불러올 페이지:</label></div>
+        <div class="rng"><input class="in s" id="fA" type="number" min="1" inputmode="numeric" aria-label="시작 페이지"><span>~</span><input class="in s" id="fB" type="number" min="1" inputmode="numeric" aria-label="끝 페이지"></div>
+        <label class="dz" id="dz" tabindex="0">
+          <span id="dzt">교 재 업 로 드<small>이미지, PDF, HWP, HWPX, DOCX, PPTX 파일을 끌어놓거나 눌러서 선택. 올리지 않으면 빈 페이지로 만듭니다.</small></span>
+          <input type="file" id="bkfile" accept=".png,.jpg,.jpeg,.gif,.webp,.bmp,.pdf,.hwp,.hwpx,.docx,.pptx,image/*" multiple hidden>
+        </label>
+      </div>
+    </div>
+    <div class="body" style="padding-top:0"><div class="foot" style="width:100%"><button class="done" id="fOk">완 료</button></div></div>
+  </div>
+</div>
+
+<!-- 삭제 확인 -->
+<div class="scrim" id="sc-del">
+  <div class="ask" role="alertdialog" aria-modal="true">
+    <b id="dName">{ 제 목 }</b>
+    <span>정말로 삭제 하시겠습니까?</span>
+    <div class="yn"><button id="dYes">예</button><span>|</span><button id="dNo">아니오</button></div>
+  </div>
+</div>
+
+<!-- 녹화 재생 -->
+<div class="scrim" id="sc-rec">
+  <div class="rp" role="dialog" aria-modal="true" aria-label="녹화 재생">
+    <header><span>녹화 다시보기</span><button id="rClose" aria-label="닫기">X</button></header>
+    <div class="cw"><canvas id="rcv" width="600" height="760"></canvas></div>
+    <div class="ctl"><button id="rPlay">▶ 재생</button><input type="range" id="rSeek" min="0" max="1000" value="0" aria-label="재생 위치"><span id="rTime">0:00</span></div>
+  </div>
+</div>
+<div class="scrim busy" id="sc-busy"><div class="bb" role="status"><div class="spin"></div><div id="busyMsg">불러오는 중…</div></div></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="script.js"></script>
+
+</body></html>
