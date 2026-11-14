@@ -1,6 +1,5 @@
 :root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
 
-
 /* Layout: 보라 그라데이션 배경 위에 좌측 메뉴 + 교재 카드 그리드, 판서 화면은 흰 페이지 + 우측 도구 막대 */
 :root{
   --bg1:#fbeefa; --bg2:#e08fd9; --bg3:#e8b4e6;
@@ -130,11 +129,19 @@ button{font:inherit;cursor:pointer;color:inherit}
 .wheel .w3{right:8px;bottom:24px}
 .wheel .w4{left:50%;bottom:0;transform:translateX(-50%)}
 .wheel .main{left:50%;top:50%;transform:translate(-50%,-50%);width:82px;height:82px;background:var(--deep)}
-.wheel .main svg{width:36px;height:36px}
-.ov{display:none;position:absolute;inset:0 0 0 0;overflow:auto;padding:10px 6px 20px;z-index:3;align-content:start;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px}
+.wheel .emenu{position:absolute;right:0;bottom:calc(100% + 8px);display:none;flex-direction:column;gap:6px;background:#f7e8f6;border:3px solid #8a4db3;border-radius:16px;padding:8px;z-index:6;white-space:nowrap}
+.wheel .emenu.on{display:flex}
+.wheel .emenu.below{bottom:auto;top:calc(100% + 8px)}
+.wheel .emenu button{position:static;display:block;background:#fff;border:2px solid var(--deep);color:var(--deep);border-radius:12px;padding:9px 16px;font-size:16px;text-align:left}
+.wheel .emenu button:hover{background:var(--soft)}
+.wheel .emenu button[aria-checked="true"]{background:var(--deep);color:#fff}
+.wheel .main svg{width:36px;height:36px;pointer-events:none}
+.wheel .main{cursor:grab;touch-action:none}
+.wheel .main.drag{cursor:grabbing}
+.ov{display:none;position:absolute;inset:0 0 0 0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;padding:14px calc(max(16px,env(safe-area-inset-right,0px)) + 100px) 28px max(16px,env(safe-area-inset-left,0px));z-index:3;align-content:start;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px}
 .ov.on{display:grid}
-.th{background:#fff;border:2px solid var(--deep);aspect-ratio:600/760;padding:0;position:relative;overflow:hidden}
-.th img{width:100%;height:100%;object-fit:contain;display:block}
+.th{display:block;position:relative;width:100%;height:0;padding:0 0 126.67% 0;background:#fff;border:2px solid var(--deep);overflow:hidden;min-width:0}
+.th img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block}
 .th span{position:absolute;right:6px;bottom:4px;background:rgba(112,48,160,.85);color:#fff;border-radius:10px;padding:0 9px;font-size:13px}
 .th.cur{outline:4px solid var(--mag)}
 .th:hover{border-color:var(--mag)}
@@ -166,6 +173,7 @@ button{font:inherit;cursor:pointer;color:inherit}
   .view.on{height:auto;min-height:100%}
   #v-board.on{height:100%}
   .bar{width:60px;border-width:5px;gap:5px;padding:6px 0}
+  .ov{padding-right:calc(max(10px,env(safe-area-inset-right,0px)) + 78px);grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
   .tb{width:40px;height:40px;font-size:12px}
   .tb svg{width:23px;height:23px}
   .tb.exit{font-size:14px}
