@@ -1,3 +1,4 @@
+
 (function(){
 "use strict";
 var W=600,H=760,KEY="ohdi.books.v1";
@@ -70,7 +71,7 @@ $("#dYes").onclick=function(){
 };
 
 /* ---------- 생성/수정 폼 ---------- */
-var fImgs=[],fCover=null;
+var fImgs=[],fCover=null,autoT=false;
 function shrink(file,max){
   return new Promise(function(res){
     var fr=new FileReader();
@@ -84,7 +85,7 @@ function shrink(file,max){
 }
 function cvShow(src){$("#cvbox").innerHTML=src?'<img alt="선택한 표지" src="'+src+'">':"표지 이미지 선택"}
 function openForm(id){
-  editing=id?find(id):null;fImgs=[];fCover=null;
+  editing=id?find(id):null;fImgs=[];fCover=null;autoT=false;
   $("#fTitle").textContent=editing?"교재 수정하기":"교재 생성하기";
   $("#fT").value=editing?editing.title:"";$("#fD").value=editing?editing.desc||"":"";
   $("#fA").value="";$("#fB").value="";
@@ -375,6 +376,8 @@ function takeFiles(fl){
     busy(false);
     if(!all.length){toast("불러온 페이지가 없습니다");return}
     fImgs=all;
+    var nm=a[0].name.replace(/\.[^.]+$/,"");
+    if(!$("#fT").value.trim()||autoT){$("#fT").value=nm;autoT=true}
     $("#dzt").innerHTML="교재 업로드 완료<small>"+fImgs.length+"페이지를 불러왔습니다. 위에서 가져올 범위를 정할 수 있습니다.</small>";
     $("#fA").value=1;$("#fB").value=fImgs.length;
     if(document.querySelector("input[name=cvm]:checked").value==="first")cvShow(fImgs[0]);
@@ -384,6 +387,7 @@ function takeFiles(fl){
     toast("불러오지 못했습니다");
   });
 }
+$("#fT").addEventListener("input",function(){autoT=false});
 $("#bkfile").onchange=function(){takeFiles(this.files);this.value=""};
 var dz=$("#dz");
 ["dragenter","dragover"].forEach(function(n){dz.addEventListener(n,function(e){e.preventDefault();dz.classList.add("over")})});
